@@ -28,6 +28,15 @@ class Graph:
 		self.edges[from_node].append(to_node)
 		self.edges[to_node].append(from_node)
 
+	def get_node_connections(self, node):
+		connections = set()
+
+		for n in self.edges:
+			if n == node:
+				connections.add(self.edges[n])
+
+		return connections
+
 # DiGraph Class
 class DiGraph:
 	def __init__(self):
@@ -66,7 +75,7 @@ def dfs(graph, start):
         vertex = stack.pop()
         if vertex not in visited:
             visited.add(vertex)
-            stack.extend(graph[vertex] - visited)
+            stack.extend(graph.get_node_connections(vertex) - visited)
     return visited
 
 
