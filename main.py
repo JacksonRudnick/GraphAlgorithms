@@ -18,6 +18,19 @@ import collections
 # Graph Class
 class Graph:
 	def __init__(self):
+		# Set of vertices
+		self.nodes = {}
+
+	def add_node(self, value):
+		self.nodes[value] = set()
+
+	def add_edge(self, from_node, to_node):
+		self.nodes[from_node].add(to_node)
+		self.nodes[to_node].add(from_node)
+
+# DiGraph Class
+class DiGraph:
+	def __init__(self):
 		self.nodes = set()
 		self.edges = collections.defaultdict(list)
 
@@ -26,30 +39,6 @@ class Graph:
 
 	def add_edge(self, from_node, to_node):
 		self.edges[from_node].append(to_node)
-		self.edges[to_node].append(from_node)
-
-	def get_node_connections(self, node):
-		connections = set()
-
-		for n in self.edges:
-			if n == node:
-				connections.add(self.edges[n])
-
-		return connections
-
-# DiGraph Class
-class DiGraph:
-	def __init__(self):
-		self.nodes = set()
-		self.edges = collections.defaultdict(list)
-		self.distances = {}
-
-	def add_node(self, value):
-		self.nodes.add(value)
-
-	def add_edge(self, from_node, to_node, distance):
-		self.edges[from_node].append(to_node)
-		self.distances[(from_node, to_node)] = distance
 
 # Weighted Graph Class
 class Weighted_Graph:
@@ -66,49 +55,32 @@ class Weighted_Graph:
 		self.edges[to_node].append(from_node)
 		self.weights[(from_node, to_node)] = weight
 
-# DFS
-# http://eddmann.com/posts/depth-first-search-and-breadth-first-search-in-python/
 def dfs(graph, start):
-    visited, stack = set(), [start]
+    """Depth-first search algorithm.
+
+    Args:
+        graph (Graph): The graph to perform DFS on.
+        start (hashable): The starting vertex for the search.
+
+    Returns:
+        set: The set of visited vertices.
+    """
+    visited = set()  # Set to keep track of visited vertices
+    stack = [start]  # Stack to perform DFS
+
     while stack:
-        #print('The stack is:', stack)
-        vertex = stack.pop()
+        vertex = stack.pop()  # Pop a vertex from the stack
+
+        # If the vertex is not visited, mark it as visited and add
+        # its unvisited neighbors to the stack
         if vertex not in visited:
             visited.add(vertex)
-            stack.extend(graph.get_node_connections(vertex) - visited)
+            stack.extend(graph.nodes[vertex] - visited)
+
     return visited
 
-
 # Dijkstra's Algorithm
-# https://gist.github.com/econchick/4666413
-def dijkstra(graph, initial):
-	visited = {initial: 0}
-	path = {}
 
-	nodes = set(graph.nodes)
-
-	while nodes: 
-		min_node = None
-		for node in nodes:
-			if node in visited:
-				if min_node is None:
-					min_node = node
-				elif visited[node] < visited[min_node]:
-					min_node = node
-
-		if min_node is None:
-			break
-
-		nodes.remove(min_node)
-		current_weight = visited[min_node]
-
-		for edge in graph.edges[min_node]:
-			weight = current_weight + graph.distance[(min_node, edge)]
-			if edge not in visited or weight < visited[edge]:
-				visited[edge] = weight
-				path[edge] = min_node
-
-	return visited, path
 
 # Main Function
 if __name__ == "__main__":
@@ -117,11 +89,16 @@ if __name__ == "__main__":
 	G.add_node("b")
 	G.add_node("c")
 	G.add_node("d")
+	G.add_node("e")
 
 	G.add_edge("a", "b")
 	G.add_edge("a", "c")
-	G.add_edge("b", "d")
+	G.add_edge("a", "d")
+	G.add_edge("a", "e")
 
-	v = dfs(G, "a")
+	G.add_edge("b", "c")
 
-	print(v)
+	G.add_edge("c", "d")
+	G.add_edge("c", "e")
+
+	print(dfs(G, "a"))
