@@ -1,59 +1,66 @@
-"""
-Vertex
-String representing a vertex in the graph
-
-Edges
-Tuple of (Vertex, Vertex)
-
-Directed Edges
-Tuple of (From Vertex, To Vertex)
-
-Weighted Edges
-Tuple of (Vertex, Vertex, Weight)
-"""
-
 #Importing Libraries
 import collections
 
 # Graph Class
 class Graph:
+	"""Represents a graph data structure."""
+
 	def __init__(self):
+		"""Initializes an empty graph."""
 		# Set of vertices
 		self.nodes = {}
 
 	def add_node(self, value):
+		"""Adds a node to the graph."""
 		self.nodes[value] = set()
 
 	def add_edge(self, from_node, to_node):
+		"""Adds an edge to the graph between two nodes."""
 		self.nodes[from_node].add(to_node)
+		"""Adds the opposite edge to complete the graph."""
 		self.nodes[to_node].add(from_node)
 
 # DiGraph Class
 class DiGraph:
+	"""Represents a directed graph data structure."""
+
 	def __init__(self):
-		self.nodes = set()
-		self.edges = collections.defaultdict(list)
+		"""Initializes an empty directed graph."""
+		self.nodes = {}
 
 	def add_node(self, value):
-		self.nodes.add(value)
+		"""Adds a node to the directed graph."""
+		self.nodes[value] = set()
 
 	def add_edge(self, from_node, to_node):
-		self.edges[from_node].append(to_node)
+		"""Adds an edge to the directed graph between two nodes."""
+		self.nodes[from_node].add(to_node)
 
 # Weighted Graph Class
 class Weighted_Graph:
+	"""Represents a weighted graph data structure."""
+
 	def __init__(self):
-		self.nodes = set()
-		self.edges = collections.defaultdict(list)
-		self.weights = {}
+		"""Initializes an empty weighted graph."""
+		self.nodes = {}  # Dictionary to store the nodes of the graph
+		self.weights = {}  # Dictionary to store the weights of the edges
 
 	def add_node(self, value):
-		self.nodes.add(value)
+		"""Adds a node to the weighted graph."""
+		self.nodes[value] = set()  # Adds the node to the dictionary
 
 	def add_edge(self, from_node, to_node, weight):
-		self.edges[from_node].append(to_node)
-		self.edges[to_node].append(from_node)
-		self.weights[(from_node, to_node)] = weight
+		"""Adds an edge to the weighted graph between two nodes.
+
+		Args:
+		    from_node (hashable): The starting node of the edge.
+		    to_node (hashable): The ending node of the edge.
+		    weight (number): The weight of the edge.
+		"""	
+		self.nodes[from_node].add(to_node)  # Adds the edge to the graph
+		self.nodes[to_node].add(from_node)  # Adds the opposite edge for completeness
+		self.weights[(from_node, to_node)] = weight  # Adds the weight of the edge
+		self.weights[(to_node, from_node)] = weight  # Adds the weight of the opposite edge
 
 # DFS
 def dfs(graph, start):
