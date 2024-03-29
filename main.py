@@ -55,6 +55,7 @@ class Weighted_Graph:
 		self.edges[to_node].append(from_node)
 		self.weights[(from_node, to_node)] = weight
 
+# DFS
 def dfs(graph, start):
     """Depth-first search algorithm.
 
@@ -79,6 +80,33 @@ def dfs(graph, start):
 
     return visited
 
+# BFS
+def bfs(graph, start):
+	"""Breadth-first search algorithm.
+
+	Args:
+	    graph (Graph): The graph to perform BFS on.
+	    start (hashable): The starting vertex for the search.
+
+	Returns:
+	    list: The list of visited vertices in the order they were visited.
+	"""
+	visited = set()  # Set to keep track of visited vertices
+	queue = [start]  # Queue to perform BFS
+	path = []  # List to store the order in which vertices are visited
+
+	while queue:
+		vertex = queue.pop(0)  # Pop a vertex from the queue
+
+		# If the vertex is not visited, mark it as visited and add
+		# its unvisited neighbors to the queue
+		if vertex not in visited:
+			visited.add(vertex)
+			queue.extend(graph.nodes[vertex] - visited)
+			path.append(vertex)
+
+	return path
+
 # Dijkstra's Algorithm
 
 
@@ -102,3 +130,4 @@ if __name__ == "__main__":
 	G.add_edge("c", "e")
 
 	print(dfs(G, "a"))
+	print(bfs(G, "a"))
