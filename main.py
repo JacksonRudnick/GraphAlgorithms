@@ -114,27 +114,183 @@ def bfs(graph, start):
 
 	return path
 
-# Dijkstra's Algorithm
+# For directional graphs linearize them
 
+# Dijkstra's Algorithm
+def dijkstra(graph, start):
+	"""Dijkstra's algorithm for shortest path.
+
+	Args:
+		graph (Graph): The graph to perform Dijkstra's algorithm on.
+		start (hashable): The starting vertex for the search.
+
+	Returns:
+		dict: The dictionary of vertices and their shortest paths.
+	"""
+	visited = set()  # Set to keep track of visited vertices
+	queue = [(0, start)]  # Queue to perform Dijkstra's algorithm
+
+
+# Standard Graph Implementation
+def standard_graph():
+	"""Returns a standard graph."""
+	G = Graph()
+	G.add_node("A")
+	G.add_node("B")
+	G.add_node("C")
+	G.add_node("D")
+	G.add_node("E")
+	G.add_node("F")	
+	G.add_node("G")
+	G.add_node("H")
+	G.add_node("I")
+	G.add_node("J")
+	G.add_node("K")
+	G.add_node("L")
+	G.add_node("M")
+	G.add_node("N")
+	G.add_node("O")
+	G.add_node("P")
+
+	G.add_edge("A", "B")
+	G.add_edge("A", "F")
+	G.add_edge("A", "E")
+
+	G.add_edge("B", "C")
+	G.add_edge("B", "F")
+
+	G.add_edge("C", "D")
+	G.add_edge("C", "G")
+
+	G.add_edge("D", "G")
+	
+	G.add_edge("E", "F")
+	G.add_edge("E", "I")
+
+	G.add_edge("F", "I")
+
+	G.add_edge("G", "J")
+
+	G.add_edge("H", "K")
+	G.add_edge("H", "L")
+
+	G.add_edge("I", "J")
+	G.add_edge("I", "M")
+
+	G.add_edge("K", "L")
+	G.add_edge("K", "O")
+
+	G.add_edge("L", "P")
+
+	G.add_edge("M", "N")
+
+	return G
+
+# DiGraph Implementation
+def di_graph():
+	"""Returns a directed graph."""
+	G = DiGraph()
+	G.add_node("1")
+	G.add_node("2")
+	G.add_node("3")
+	G.add_node("4")
+	G.add_node("5")
+	G.add_node("6")
+	G.add_node("7")
+	G.add_node("8")
+	G.add_node("9")
+	G.add_node("10")
+	G.add_node("11")
+	G.add_node("12")
+
+	G.add_edge("1", "3")
+
+	G.add_edge("2", "1")
+
+	G.add_edge("3", "2")
+	G.add_edge("3", "5")
+
+	G.add_edge("4", "1")
+	G.add_edge("4", "2")
+	G.add_edge("4", "12")
+
+	G.add_edge("5", "6")
+	G.add_edge("5", "8")
+
+	G.add_edge("6", "7")
+	G.add_edge("6", "8")
+
+	G.add_edge("7", "10")
+
+	G.add_edge("8", "9")
+	G.add_edge("8", "10")
+
+	G.add_edge("9", "5")
+	G.add_edge("9", "11")
+
+	G.add_edge("10", "11")
+	G.add_edge("10", "9")
+
+	G.add_edge("11", "12")
+
+	return G
+
+# Weighted Graph Implementation
+def weighted_graph():
+	"""Returns a weighted graph."""
+	G = Weighted_Graph()
+	G.add_node("A")
+	G.add_node("B")
+	G.add_node("C")
+	G.add_node("D")
+	G.add_node("E")
+	G.add_node("F")	
+	G.add_node("G")
+	G.add_node("H")
+	G.add_node("I")
+	
+	G.add_edge("A", "B", 22)
+	G.add_edge("A", "C", 9)
+	G.add_edge("A", "D", 12)
+
+	G.add_edge("B", "C", 35)
+	G.add_edge("B", "F", 36)
+	G.add_edge("B", "H", 34)
+
+	G.add_edge("C", "F", 42)
+	G.add_edge("C", "E", 65)
+	G.add_edge("C", "D", 4)
+
+	G.add_edge("D", "E", 33)
+	G.add_edge("D", "I", 30)
+
+	G.add_edge("E", "F", 18)
+	G.add_edge("E", "G", 23)
+
+	G.add_edge("F", "G", 39)
+	G.add_edge("F", "H", 24)
+
+	G.add_edge("G", "H", 25)
+	G.add_edge("G", "I", 21)
+
+	G.add_edge("H", "I", 19)
+
+	return G
 
 # Main Function
 if __name__ == "__main__":
-	G = Graph()
-	G.add_node("a")
-	G.add_node("b")
-	G.add_node("c")
-	G.add_node("d")
-	G.add_node("e")
+	G = standard_graph()
 
-	G.add_edge("a", "b")
-	G.add_edge("a", "c")
-	G.add_edge("a", "d")
-	G.add_edge("a", "e")
+	print(dfs(G, "A"))
+	print(dfs(G, "H"))
 
-	G.add_edge("b", "c")
+	print(bfs(G, "A"))
+	print(bfs(G, "H"))
 
-	G.add_edge("c", "d")
-	G.add_edge("c", "e")
+	G = di_graph()
+	#Do stuff here
 
-	print(dfs(G, "a"))
-	print(bfs(G, "a"))
+	print(dfs(G, "1"))
+
+	G = weighted_graph()
+	#Do stuff here
