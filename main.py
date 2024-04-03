@@ -258,14 +258,13 @@ def strongly_connected_components(graph):
 
 	# Perform the algorithm
 	while to_visit:
-		# Perform Depth-First Search from each unvisited node
 		while next:
 			node = next.pop()
 			currently_connected.append(node)
 			for edge in graph.nodes[node]:
 				# If the edge is not visited and a new path is found,
 				# add it to the stack and remove it from to_visit
-				if dfs_search(graph, edge, node) and not edge in currently_connected:
+				if dfs_search(graph, edge, node) and not edge in currently_connected and not edge in next:
 					next.append(edge)
 					to_visit.remove(edge)
 
@@ -428,6 +427,7 @@ def weighted_graph():
 
 # Main Function
 if __name__ == "__main__":
+	# Standard Graph
 	G = standard_graph()
 	
 	print("DFS starting with A")
@@ -439,17 +439,17 @@ if __name__ == "__main__":
 	print(bfs(G, "A"))
 	print("BFS starting with H")
 	print(bfs(G, "H"))
-
+	
+	# DiGraph
 	G = di_graph()
-	#Do stuff here
 
 	print("DFS starting with 1")
 	print(dfs(G, "1"))
 	print("Digraph SCCs")
 	print(strongly_connected_components(G))
 
+	# Weight Graph
 	G = weighted_graph()
-	#Do stuff here
 	
 	print("Dijkstra starting with A")
 	print(dijkstra(G, "A"))
