@@ -95,6 +95,31 @@ def dfs(graph, start):
 
 	return visited
 
+def dfs_search(graph, start, end):
+	"""Depth-first search algorithm.
+
+	Args:
+		graph (Graph): The graph to perform DFS on.
+		start (hashable): The starting vertex for the search.
+		end (hashable): The ending vertex for the search.
+
+	Returns:
+		list: The list of visited vertices.
+	"""
+	stack = [start]  # Stack to perform DFS
+	visited = set()  # Set to keep track of visited vertices
+
+	while stack:
+		vertex = stack.pop()
+		if vertex not in visited:  # If vertex is not visited
+			if vertex == end:  # If vertex is the end vertex
+				return True  # Return the path from start to end
+			visited.add(vertex)  # Mark vertex as visited
+			for neighbor in graph.nodes[vertex] - visited:  # Add unvisited neighbors to the stack
+				stack.append(neighbor)
+
+	return False
+
 # BFS
 def bfs(graph, start):
 	"""Breadth-first search algorithm.
@@ -199,6 +224,60 @@ def prim(graph, start):
 			stack.extend(graph.nodes[vertex] - visited)
 
 	return visited
+
+# Transpose Graph
+def transpose_graph(graph):
+	"""Transposes a directed graph."""
+	transpose = DiGraph()
+	for node in graph.nodes:
+		transpose.add_node(node)
+	for node in graph.nodes:
+		for adjacent in graph.nodes[node]:
+			transpose.add_edge(adjacent, node)
+	return transpose
+
+# Strongly Connected Components
+def strongly_connected_components(graph):
+	"""Performs the Strongly Connected Components algorithm on a graph.
+
+	Args:
+	    graph (Graph): The graph to perform the algorithm on.
+
+	Returns:
+	    list: A list of lists, where each inner list represents a strongly
+	          connected component in the graph.
+	"""
+	# Initialize variables
+	currently_connected = []  # List of nodes in the current component
+	to_visit = list(graph.nodes.keys())  # List of nodes to visit
+	next = []  # Stack of nodes to visit next
+	components = []  # List of strongly connected components
+
+	# Add starting node to stack
+	next.append(to_visit.pop())
+
+	# Perform the algorithm
+	while to_visit:
+		# Perform Depth-First Search from each unvisited node
+		while next:
+			node = next.pop()
+			currently_connected.append(node)
+			for edge in graph.nodes[node]:
+				# If the edge is not visited and a new path is found,
+				# add it to the stack and remove it from to_visit
+				if dfs_search(graph, edge, node) and not edge in currently_connected:
+					next.append(edge)
+					to_visit.remove(edge)
+
+		# Add the current component to the list of components
+		components.append(currently_connected)
+		currently_connected = []
+
+		# If there are still nodes to visit, add the next node to visit to the stack
+		if to_visit:
+			next.append(to_visit.pop())
+
+	return components
 
 # Standard Graph Implementation
 def standard_graph():
@@ -366,9 +445,12 @@ if __name__ == "__main__":
 
 	print("DFS starting with 1")
 	print(dfs(G, "1"))
+	print("Digraph SCCs")
+	print(strongly_connected_components(G))
 
 	G = weighted_graph()
 	#Do stuff here
 	
 	print("Dijkstra starting with A")
 	print(dijkstra(G, "A"))
+	
