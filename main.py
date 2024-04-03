@@ -42,12 +42,17 @@ class Weighted_Graph:
 
 	def __init__(self):
 		"""Initializes an empty weighted graph."""
-		self.nodes = {}  # Dictionary to store the nodes of the graph
+		self.nodes = set()  # Dictionary to store the nodes of the graph
 		self.weights = {}  # Dictionary to store the weights of the edges
+		##self.nodes = set()
+		self.edges = {}
+		##self.distance = {}
 
 	def add_node(self, value):
 		"""Adds a node to the weighted graph."""
-		self.nodes[value] = set()  # Adds the node to the dictionary
+		self.nodes.add(value)   # Adds the node to the dictionary
+		self.edges[value] = set()
+		##self.nodes.add(value)
 
 	def add_edge(self, from_node, to_node, weight):
 		"""Adds an edge to the weighted graph between two nodes.
@@ -57,8 +62,11 @@ class Weighted_Graph:
 		    to_node (hashable): The ending node of the edge.
 		    weight (number): The weight of the edge.
 		"""	
-		self.nodes[from_node].add(to_node)  # Adds the edge to the graph
-		self.nodes[to_node].add(from_node)  # Adds the opposite edge for completeness
+		##self.nodes[from_node].add(to_node)  # Adds the edge to the graph
+		##self.nodes[to_node].add(from_node)  # Adds the opposite edge for completeness
+		self.edges[from_node].add(to_node)
+		self.edges[to_node].add(from_node)
+		##self.distance[(from_node, to_node)] = weight
 		self.weights[(from_node, to_node)] = weight  # Adds the weight of the edge
 		self.weights[(to_node, from_node)] = weight  # Adds the weight of the opposite edge
 
@@ -127,8 +135,38 @@ def dijkstra(graph, start):
 	Returns:
 		dict: The dictionary of vertices and their shortest paths.
 	"""
-	visited = set()  # Set to keep track of visited vertices
-	queue = [(0, start)]  # Queue to perform Dijkstra's algorithm
+	##visited = set()  # Set to keep track of visited vertices
+	##queue = [(0, start)]  # Queue to perform Dijkstra's algorithm
+	##path = []
+    
+	visited = {start: 0}
+	path  = {}
+    
+	nodes = set(graph.nodes)
+	while nodes:
+		min_node = None
+		for node in nodes:
+			if node in visited:
+				if min_node is None:
+					min_node = node
+				elif visited[node] < visited[min_node]:
+					min_node = node
+
+		if min_node is None:
+			break
+        
+		nodes.remove(min_node)
+		current_weight = visited[min_node]
+        
+		for edge in graph.edges[min_node]:
+				if min_node == edge:
+						break
+				weight = current_weight + graph.weights[(min_node, edge)]
+				if edge not in visited or weight < visited[edge]:
+						visited[edge] = weight
+						path[edge] = min_node
+                
+	return  visited, path
 
 
 # Standard Graph Implementation
@@ -238,7 +276,10 @@ def di_graph():
 # Weighted Graph Implementation
 def weighted_graph():
 	"""Returns a weighted graph."""
+    
 	G = Weighted_Graph()
+    
+	
 	G.add_node("A")
 	G.add_node("B")
 	G.add_node("C")
@@ -274,23 +315,55 @@ def weighted_graph():
 	G.add_edge("G", "I", 21)
 
 	G.add_edge("H", "I", 19)
+	'''
+    
+	G.nodes = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'}
+	G.edges = {'A': ['B', 'C', 'D'],
+               'B': ['A', 'C', 'F', 'H'],
+               'C': ['A', 'B', 'F', 'E', 'D'],
+               'D': ['A', 'C', 'E', 'I'],
+               'E': ['C', 'D', 'F', 'G'],
+               'F': ['B', 'C', 'E', 'G', 'H'],
+               'G': ['E', 'F', 'H', 'I'],
+               'H': ['B', 'F', 'G', 'I'],
+               'I': ['D', 'G', 'H'],
+               }
+	G.distance = {('A','B'):22, ('A','C'):9, ('A','D'):12,
+                  ('B','A'):22, ('B','C'):35, ('B','F'):36, ('B','H'):34,
+                  ('C','A'):9, ('C','B'):35, ('C','D'):4,('C','E'):65,('C','F'):42,
+                  ('D','A'):12, ('D','C'):4, ('D','E'):33, ('D','I'):30,
+                  ('E','C'):65, ('E','D'):33, ('E','F'):18, ('E','G'):23,
+                  ('F','B'):36, ('F','C'):42, ('F', 'E'):18, ('F','G'):39, ('F','H'):24,
+                  ('G','E'):23, ('G','F'):39, ('G','H'):25, ('G','I'):21,
+                  ('H','B'):34, ('H','F'):24, ('H','G'):25, ('H','I'):21,
+                  ('I','D'):30, ('I','G'):21, ('I','H'):19,
+                  }
+	'''
 
 	return G
 
 # Main Function
 if __name__ == "__main__":
 	G = standard_graph()
-
+    
+    
+	print("DFS starting with A")
 	print(dfs(G, "A"))
+	print("DFS starting with H")
 	print(dfs(G, "H"))
 
+	print("BFS starting with A")
 	print(bfs(G, "A"))
+	print("BFS starting with H")
 	print(bfs(G, "H"))
 
 	G = di_graph()
 	#Do stuff here
-
+	print("DFS starting with 1")
 	print(dfs(G, "1"))
 
 	G = weighted_graph()
 	#Do stuff here
+    
+	print("Dijkstra starting with A")
+	print(dijkstra(G, "A"))
