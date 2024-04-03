@@ -200,6 +200,7 @@ def dijkstra(graph, start):
 
 	return visited, path
 
+'''
 # Prim's Algorithm
 def prim(graph, start):
 	"""Prim's algorithm for finding the minimum spanning tree of a graph.
@@ -211,30 +212,42 @@ def prim(graph, start):
 	Returns:
 		list: The list of nodes in the minimum spanning tree.
 	"""
-	visited = set()  # Set to keep track of visited nodes
-	stack = [start]  # Stack to perform Prim's algorithm
+	print(f"Initializing tree with start node: {start}")
+	tree = Weighted_Graph()  # Initialize the tree
+	next = start
+	possible_connections = []
+	to_visit = list(graph.nodes)
+	min_connection = None
+	min_edge = None
 
-	while stack:
-		vertex = stack.pop()  # Pop a vertex from the stack
+	tree.add_node(start)
+	to_visit.remove(start)
+	print(f"Starting with nodes to visit: {to_visit}")
+	
+	while to_visit:
+		print(f"Next node: {next}")
+		print(f"Edges of next node: {graph.edges[next]}")
+		for edge in graph.edges[next]:
+			if edge not in tree.nodes:
+				possible_connections.append((next, edge))
+				print(f"Found possible connection: {(next, edge)}")
+		for connection in possible_connections:
+			weight = graph.weights[connection]
+			if min_connection == None or weight < min_connection:
+				min_connection = weight
+				min_edge = connection
+				print(f"Found new min edge: {min_edge} with weight {min_connection}")
+		tree.add_node(min_edge[1])
+		tree.add_edge(min_edge[0], min_edge[1], min_connection)
+		print(f"Tree after adding new edge: {tree}")
+		next = min_edge[1]		
+		print(f"Nodes left to visit: {to_visit}")
+		print(f"Next node: {next}")
+		to_visit.remove(next)
+		print(f"Nodes left to visit: {to_visit}")
 
-		# If the vertex is not visited, mark it as visited and add
-		# its unvisited neighbors to the stack
-		if vertex not in visited:
-			visited.add(vertex)
-			stack.extend(graph.nodes[vertex] - visited)
-
-	return visited
-
-# Transpose Graph
-def transpose_graph(graph):
-	"""Transposes a directed graph."""
-	transpose = DiGraph()
-	for node in graph.nodes:
-		transpose.add_node(node)
-	for node in graph.nodes:
-		for adjacent in graph.nodes[node]:
-			transpose.add_edge(adjacent, node)
-	return transpose
+	return tree
+'''
 
 # Strongly Connected Components
 def strongly_connected_components(graph):
@@ -447,10 +460,13 @@ if __name__ == "__main__":
 	print(dfs(G, "1"))
 	print("Digraph SCCs")
 	print(strongly_connected_components(G))
-
+	
 	# Weight Graph
 	G = weighted_graph()
 	
 	print("Dijkstra starting with A")
 	print(dijkstra(G, "A"))
+
+	print("Prim starting with A")
+	print(prim(G, "A"))
 	
