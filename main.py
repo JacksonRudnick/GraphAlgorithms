@@ -55,9 +55,9 @@ class Weighted_Graph:
 		"""Adds an edge to the weighted graph between two nodes.
 
 		Args:
-		    from_node (hashable): The starting node of the edge.
-		    to_node (hashable): The ending node of the edge.
-		    weight (number): The weight of the edge.
+			from_node (hashable): The starting node of the edge.
+			to_node (hashable): The ending node of the edge.
+			weight (number): The weight of the edge.
 		"""	
 		self.edges[from_node].add(to_node)  # Add 'to_node' to 'from_node's adjacent nodes
 		self.edges[to_node].add(from_node)  # Add 'from_node' to 'to_node's adjacent nodes
@@ -66,104 +66,114 @@ class Weighted_Graph:
 
 # DFS
 def dfs(graph, start):
-    """Depth-first search algorithm.
+	"""Depth-first search algorithm.
 
-    Args:
-        graph (Graph): The graph to perform DFS on.
-        start (hashable): The starting vertex for the search.
+	Args:
+		graph (Graph): The graph to perform DFS on.
+		start (hashable): The starting vertex for the search.
 
-    Returns:
-        list: The list of visited vertices.
+	Returns:
+		list: The list of visited vertices.
 	"""
-    visited = []  # List to keep track of visited vertices
-    stack = [start]  # Stack to perform DFS
-    
-    while stack:
-        vertex = stack.pop()  # Pop a vertex from the stack
+	visited = []  # List to keep track of visited vertices
+	stack = [start]  # Stack to perform DFS
+	nodes = list(graph.nodes.keys())
+	
+	while nodes:
+		while stack:
+			vertex = stack.pop()  # Pop a vertex from the stack
 
-        # If the vertex is not visited, mark it as visited and add
-        # its unvisited neighbors to the stack
-        if vertex not in visited:
-            visited.append(vertex)
-            for neighbor in graph.nodes[vertex] - set(visited):
-                stack.append(neighbor)
+			# If the vertex is not visited, mark it as visited and add
+			# its unvisited neighbors to the stack
+			if vertex not in visited:
+				nodes.remove(vertex)
+				visited.append(vertex)
+				for neighbor in graph.nodes[vertex] - set(visited):
+					stack.append(neighbor)
+		if nodes:
+			stack.append(nodes[0])
 
-    return visited
+	return visited
 
 # BFS
 def bfs(graph, start):
 	"""Breadth-first search algorithm.
 
 	Args:
-	    graph (Graph): The graph to perform BFS on.
-	    start (hashable): The starting vertex for the search.
+		graph (Graph): The graph to perform BFS on.
+		start (hashable): The starting vertex for the search.
 
 	Returns:
-	    list: The list of visited vertices in the order they were visited.
+		list: The list of visited vertices in the order they were visited.
 	"""
 	visited = []  # Set to keep track of visited vertices
 	queue = [start]  # Queue to perform BFS
+	nodes = list(graph.nodes.keys())
 
-	while queue:
-		vertex = queue.pop(0)  # Pop a vertex from the queue
+	while nodes:
+		while queue:
+			vertex = queue.pop(0)  # Pop a vertex from the queue
 
-		# If the vertex is not visited, mark it as visited and add
-		# its unvisited neighbors to the queue
-		if vertex not in visited:
-			visited.append(vertex)
-			queue.extend(graph.nodes[vertex] - set(visited))
+			# If the vertex is not visited, mark it as visited and add
+			# its unvisited neighbors to the queue
+			if vertex not in visited:
+				nodes.remove(vertex)
+				visited.append(vertex)
+				queue.extend(graph.nodes[vertex] - set(visited))
+		if nodes:
+			queue.append(nodes[0])
 
 	return visited
 
 # Dijkstra's Algorithm
 def dijkstra(graph, start):
-    """Dijkstra's algorithm for finding the shortest path from a given start node to all other nodes in a graph.
+	"""Dijkstra's algorithm for finding the shortest path from a given start node to all other nodes in a graph.
 
-    Args:
-        graph (Graph): The graph to perform Dijkstra's algorithm on.
-        start (hashable): The starting vertex for the search.
+	Args:
+		graph (Graph): The graph to perform Dijkstra's algorithm on.
+		start (hashable): The starting vertex for the search.
 
-    Returns:
-        tuple: A tuple containing a dictionary of visited nodes and their corresponding shortest distances from the start node, and a dictionary of the shortest paths.
-    """
-    visited = {start: 0}  # Dictionary to store visited nodes and their distances from the start node
-    path = {}  # Dictionary to store the shortest paths from the start node to other nodes
+	Returns:
+		tuple: A tuple containing a dictionary of visited nodes and their corresponding shortest distances from the start node, and a dictionary of the shortest paths.
+	"""
+	visited = {start: 0}  # Dictionary to store visited nodes and their distances from the start node
+	path = {}  # Dictionary to store the shortest paths from the start node to other nodes
 
-    # Set of all nodes in the graph
-    nodes = set(graph.nodes)
+	# Set of all nodes in the graph
+	nodes = set(graph.nodes)
 
-    # While there are still unvisited nodes
-    while nodes:
-        min_node = None  # Initialize min_node to None
+	# While there are still unvisited nodes
+	while nodes:
+		min_node = None  # Initialize min_node to None
 
-        # Find the node with the smallest distance from the start node
-        for node in nodes:
-            if node in visited:
-                if min_node is None:
-                    min_node = node  # If min_node is not initialized, set it to the current node
-                elif visited[node] < visited[min_node]:
-                    min_node = node  # If the current node has a smaller distance, set min_node to it
+		# Find the node with the smallest distance from the start node
+		for node in nodes:
+			if node in visited:
+				if min_node is None:
+					min_node = node  # If min_node is not initialized, set it to the current node
+				elif visited[node] < visited[min_node]:
+					min_node = node  # If the current node has a smaller distance, set min_node to it
 
-        # If all nodes are visited, break the loop
-        if min_node is None:
-            break
+		# If all nodes are visited, break the loop
+		if min_node is None:
+			break
 
-        # Remove the visited node from the set of unvisited nodes
-        nodes.remove(min_node)
+		# Remove the visited node from the set of unvisited nodes
+		nodes.remove(min_node)
 
-        # Get the current distance of the visited node from the start node
-        current_weight = visited[min_node]
+		# Get the current distance of the visited node from the start node
+		current_weight = visited[min_node]
 
-        # Update the distances and paths of the unvisited neighbors of the visited node
-        for edge in graph.edges[min_node]:
-            if min_node == edge:
-                break  # Skip self-loops
-            weight = current_weight + graph.weights[(min_node, edge)]
-            if edge not in visited or weight < visited[edge]:
-                visited[edge] = weight  # Update the distance if a shorter path is found
-                path[edge] = min_node  # Update the path to the visited node
+		# Update the distances and paths of the unvisited neighbors of the visited node
+		for edge in graph.edges[min_node]:
+			if min_node == edge:
+				break  # Skip self-loops
+			weight = current_weight + graph.weights[(min_node, edge)]
+			if edge not in visited or weight < visited[edge]:
+				visited[edge] = weight  # Update the distance if a shorter path is found
+				path[edge] = min_node  # Update the path to the visited node
 
-    return visited, path
+	return visited, path
 
 # Prim's Algorithm
 def prim(graph, start):
@@ -340,7 +350,7 @@ def weighted_graph():
 # Main Function
 if __name__ == "__main__":
 	G = standard_graph()
-    
+	
 	print("DFS starting with A")
 	print(dfs(G, "A"))
 	print("DFS starting with H")
@@ -359,6 +369,6 @@ if __name__ == "__main__":
 
 	G = weighted_graph()
 	#Do stuff here
-    
+	
 	print("Dijkstra starting with A")
 	print(dijkstra(G, "A"))
