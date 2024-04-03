@@ -460,13 +460,13 @@ if __name__ == "__main__":
 	print(dfs(G, "1"))
 	print("Digraph SCCs")
 	print(strongly_connected_components(G))
-	
+
 	# Weight Graph
 	G = weighted_graph()
 	
 	print("Dijkstra starting with A")
 	print(dijkstra(G, "A"))
 
-	print("Prim starting with A")
-	print(prim(G, "A"))
+	#print("Prim starting with A")
+	#print(prim(G, "A"))
 	
